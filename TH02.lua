@@ -1,6 +1,7 @@
 -- TH02 Temperature and Humidity Sensor for NodeMCU
 -- Author: Andy Kobyljanec
 
+local TH02 = {}
 
 busid = 0     -- Always 0 for NodeMCU
 sda   = 2     -- SDA wired to IO index 2
@@ -9,7 +10,7 @@ addr  = 0x40  -- 7-bit device address
 
 i2c.setup(busid,sda,scl,i2c.SLOW)
 
-function readTH02Id()
+function TH02.readId()
   i2c.start(busid)
   i2c.address(busid, addr, i2c.TRANSMITTER)
   i2c.write(busid, 0x11)  -- 0x11 is the ID register
@@ -25,7 +26,8 @@ function readTH02Id()
   end
 end
 
-function readReadyBit()
+
+local function readReadyBit()
     -- read the ready bit
   i2c.start(busid)
   i2c.address(busid, addr, i2c.TRANSMITTER)
@@ -45,7 +47,7 @@ function readReadyBit()
 end
   
   
-function readTemperature()
+function TH02.readTemperature()
   i2c.start(busid)
   i2c.address(busid, addr, i2c.TRANSMITTER)
   i2c.write(busid, 0x03)    -- write to status register
@@ -76,7 +78,7 @@ function readTemperature()
 end
 
 
-function readHumidity()
+function TH02.readHumidity()
   i2c.start(busid)
   i2c.address(busid, addr, i2c.TRANSMITTER)
   i2c.write(busid, 0x03)    -- write to status register
@@ -105,7 +107,5 @@ function readHumidity()
   
   return humidity
 end
-  
-readTH02Id()
-readTemperature()
-readHumidity()
+
+return TH02
